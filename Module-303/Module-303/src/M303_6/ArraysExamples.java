@@ -11,7 +11,13 @@ public class ArraysExamples {
             System.out.println("numbers[" + pos + "] = " + numbers[pos]);
         }
 
-        int[]  numbers1 = { 1,2,3,4,5};
+        // array by hard coding it
+        // this will create a new int array with size of 6
+        // and automatically fill the array with the given values
+        int [] numbers1 = { 1, 2, 3, 4 ,5, 6};
+
+        // this will create an array of size 5 with the given values
+        String [] strings = { "one", "two", "three", "four", "five"};
 
 
     }
