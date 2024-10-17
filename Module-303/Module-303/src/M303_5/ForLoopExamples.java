@@ -33,8 +33,8 @@ public class ForLoopExamples {
         String characters = "abcdefg";
 
         // not that string.length() does use the ()
-        for ( int pos = 0 ; pos < characters.length() ; pos++ ) {
-            System.out.println( "characters at position" + pos + " = " + characters.charAt(pos));
+        for (int pos = 0; pos < characters.length(); pos++) {
+            System.out.println("characters at position" + pos + " = " + characters.charAt(pos));
         }
 
         // looping over a list
