@@ -1,9 +1,9 @@
 package coffee_shop;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CoffeeShop {
 
@@ -28,8 +28,59 @@ public class CoffeeShop {
         Product p3 = new Product("Sugar Cookie", 5.89, 0);
         products.add(p3);
 
-        Product p4 = new Product("Egg Sandwich", 6.49, 0);
+        Product p5 = new Product("Ginger Cookie", 5.89, 0);
+        products.add(p5);
+
+        Product p4 = new Product("Egg Sandwich", 2.49, 0);
         products.add(p4);
+
+        // load
+        List<Product> loaded = new ProductLoader().loadProducts();
+
+        products.addAll(loaded);
+
+        // lets sort the list by the price
+        // https://stackoverflow.com/questions/40517977/sorting-a-list-with-stream-sorted-in-java
+        // stream will not modify the original list that you streamed
+
+
+        List<Product> sorted = products.stream().sorted(Comparator.comparing(Product::getPrice)).toList();
+
+        // this just prints the products and when we run this we will have to make a fix
+        //sorted.forEach(p -> System.out.println(p));
+
+        // this will modify the origial list ... using stream will not modify the original list
+        products.sort(Comparator.comparing(Product::getPrice).thenComparing(Product::getName));
+        // this line uses a lambda expression
+        //products.forEach(p -> System.out.println(p));
+
+        sortByPrice(products);
+    }
+
+    // TODO - Homework #1 - write this function using a for loop
+    // use a bubble sort algorithm - look this up on google
+    // sort the list of products by price using 2 nested for loops to implement a bubble sort in a function
+    // should create a function that will tke in a List<Product> to be sorted and return a sorted List<Product>
+    // commenting on the top of a function is generally bad practice .. im just doign this for the assginment
+    private List<Product> sortByPrice(List<Product> source) {
+        // convert the list to an array
+
+        for (int outer = 0; outer < source.size() - 1; outer++) {
+            for (int inner = outer + 1; inner < source.size(); inner++) {
+                Product p0 = source.get(outer);
+                Product p1 = source.get(inner);
+
+                if (p0.getPrice() > p1.getPrice()) {
+                    //Product temp = source.get(outer);
+                    source.set(inner, p0);
+                    source.set(outer, p1);
+                }
+            }
+        }
+
+        products.forEach(p -> System.out.println(p));
+
+        return null;
     }
 
     private void printProductMenu() {
@@ -49,6 +100,8 @@ public class CoffeeShop {
         System.out.println("2) Purchase product");
         System.out.println("3) Checkout");
         System.out.println("4) Exit");
+        System.out.println("5) Product Search");
+        System.out.println("6) Remove product from cart");
 
         return readNumberFromUser("\nEnter Selection :");
     }
@@ -62,10 +115,14 @@ public class CoffeeShop {
             // normally a return stops execution of code at that point and executes the function
             // ****** !!!!!!  in this case it will still call the finally block
             return selection;
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input : Please enter a valid number.");
+            scanner.nextLine();
+            throw new InvalidInputException("Invalid input: Please enter a valid number.");
         } catch (Exception e) {
             // this is logic we are adding as an engineer so we know there was a problem
             // this is not always the best of handeling things
-            System.out.println("Invalid input: " + e.getMessage());
+            System.out.println("An unexpected error occurred: " + e.getMessage());
             throw new InvalidInputException("Invalid input: " + e.getMessage());
         } finally {
             // this is a good example of usage for a finally block is to clear the Scanner so it is ready for the
@@ -73,6 +130,7 @@ public class CoffeeShop {
             scanner.nextLine();
         }
     }
+
 
     public void addProductToCart() {
         // 1 display the items for sale
@@ -115,6 +173,44 @@ public class CoffeeShop {
         }
     }
 
+    public void removeProductFromCart() {
+        if (cart.isEmpty()) {
+            System.out.println("Your cart is empty.");
+            return;
+        }
+
+        System.out.println("==== Items in your cart ====");
+        for (int i = 0; i < cart.size(); i++) {
+            Product item = cart.get(i);
+            System.out.println((i + 1) + ") " + item.getName() + " \t " + item.getQuantity() + " \t $" + item.getPrice());
+        }
+
+        try {
+            int selection = readNumberFromUser("Enter the number of the product to remove:");
+
+            if (selection >= 1 && selection <= cart.size()) {
+                Product selectedProduct = cart.get(selection - 1);
+
+                int removeQuantity = readNumberFromUser("Enter quantity to remove:");
+
+                if (removeQuantity <= 0) {
+                    System.out.println("Invalid quantity.");
+                } else if (removeQuantity >= selectedProduct.getQuantity()) {
+                    cart.remove(selectedProduct);
+                    selectedProduct.setQuantity(0);
+                    System.out.println(selectedProduct.getName() + " removed from your cart.");
+                } else {
+                    selectedProduct.setQuantity(selectedProduct.getQuantity() - removeQuantity);
+                    System.out.println("Reduced " + selectedProduct.getName() + " by " + removeQuantity + " in your cart.");
+                }
+            } else {
+                System.out.println("Invalid selection.");
+            }
+        } catch (InvalidInputException iie) {
+            System.out.println("Invalid input.");
+        }
+    }
+
     private boolean isProductSelectionValid(int selectedProduct) {
         if (selectedProduct >= 1 && selectedProduct <= products.size()) {
             return true;
@@ -144,21 +240,50 @@ public class CoffeeShop {
         // list the items in the cart
         double subtotal = 0.0;
         for (Product item : cart) {
+            double totalItemPrice = item.getPrice() * item.getQuantity();
             System.out.println(item.getName() + " \t " + item.getQuantity() + " \t $" + item.getPrice() + " \t Total $" + (item.getPrice() * item.getQuantity()));
             subtotal = subtotal + item.getPrice();
         }
+        DecimalFormat df = new DecimalFormat("$###,###.00");
         System.out.println("");
-        System.out.println("Subtotal\t\t $" + subtotal);
+        System.out.println("Subtotal\t\t " + df.format(subtotal));
 
         // assume there is a 9% sales tax to be applied to the order
         // calculate tax
         double tax = subtotal * 0.09;
-        System.out.println("Tax\t\t\t\t $" + tax);
+        System.out.println("Tax\t\t\t\t " + df.format(tax));
 
         // calculate total amount
         // adding an addtional () will cause it to do the math
         double total = (subtotal + tax);
-        System.out.println("Total\t\t\t $" + total + "\n");
+        System.out.println("Total\t\t\t " + df.format(total) + "\n");
+    }
+
+
+    // TODO - Homework #2 - create a new main menu option that allows you to search the list of products for a user entered name
+    // - 1) Ask the user to enter a search phrase "coffee"
+    // - 2) filter the list of products to show only the products that the match the phrase entered
+    // - 2b - do not alter the original list of products which means use the .stream()
+    // - 2c - use a lambda to print out the sorted list using a product.toString() method
+    // - 2c p1 - create a toString method on your product object
+    // - 3) Add the search capability to the main menu when you start the coffee shop as a new option
+    public void productSearch() {
+        System.out.print("Enter a product name to search for: ");
+        String search = scanner.nextLine();
+
+        // this line of code filters the list of products based if the search input is in the string
+        List<Product> results = products.stream().filter(p -> p.getName().contains(search)).toList();
+
+        // to make it case insensitive then use toLowerCase or toUpperCase
+        // this is a common technique when you want to compare case insenstive
+        // List<Product> results = products.stream().filter(p -> p.getName().toLowerCase().contains(search.toLowerCase())).toList();
+
+        // print the result list using a lamda
+        if (results.isEmpty()) {
+            System.out.println("No results were found for input " + search + ".\n");
+        } else {
+            results.forEach(p -> System.out.println(p));
+        }
     }
 
     public void start() throws InvalidInputException {
@@ -168,34 +293,48 @@ public class CoffeeShop {
 
         // repeat forever until the user enters selection 4 which will exit the program
         while (true) {
+            try {
             // print the menu and get back the user selected input
-            int selection = printMainMenu();
+            // add a try catch block here and reshow the menu asking for another input
+                int selection = printMainMenu();
 
-            if (selection == 1) {
+                 if (selection == 1) {
                 // print the product menu
                 printProductMenu();
-            } else if (selection == 2) {
+                 } else if (selection == 2) {
                 // purchase product / add to cart
                 addProductToCart();
-            } else if (selection == 3) {
+                 } else if (selection == 3) {
                 // checkout
                 checkout();
-            } else if (selection == 4) {
+                } else if (selection == 4) {
                 System.out.println("Good bye");
 
                 // we are exiting with a value of 0 means successful exit
                 // this ends the program
                 System.exit(0);
-            } else {
+                 } else if (selection == 5) {
+                productSearch();
+                 } else if (selection == 6) {
+                removeProductFromCart();
+                 } else {
                 System.out.println("Invalid command entered " + selection + "\n");
+                 }
+            } catch (Exception e) {
+                System.out.println("Invalid command entered\n");
             }
         }
 
     }
 
     // a main method can not be private
-    public static void main(String[] args) throws InvalidInputException {
+    public static void main(String[] args) {
         CoffeeShop cs = new CoffeeShop();
-        cs.start();
+        try {
+            cs.start();
+        } catch (InvalidInputException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Ending program");
     }
 }

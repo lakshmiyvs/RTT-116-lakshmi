@@ -1,0 +1,4 @@
+Sandwich, 4.50
+Chai Latte, 7.78
+Decaff Latte, 5.25
+PumpkinSpiceLatte, 8.15
