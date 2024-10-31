@@ -53,6 +53,16 @@ from orderdetails
 group by order_id
 order by count(*) desc;
 
+-- I want to see the office that has the most orders (group by office_id)
+-- when grouping by the primary key ---- we can get individual
+select o.id, o.city, count(*)
+from offices o, employees e, customers c, orders ord
+where o.id = e.office_id
+  and e.id = c.sales_rep_employee_id
+  and c.id = ord.customer_id
+group by o.id
+order by count(*) desc;
+
 -- BONUS .... I want to see the total quantity ordered for each order ... we have not learned this yet ..
 -- but it group by the order_id and sum(quanity_ordered)
 select order_id, sum(quantity_ordered)
@@ -67,3 +77,17 @@ select e.firstname, e.lastname, c.customer_name
 from employees e, customers c
 where e.id = c.sales_rep_employee_id
 order by c.customer_name;
+
+-- --------------------------------
+
+select order_date, year(order_date), month(order_date) from orders;
+
+-- ------------------------------
+select  o.city,count(*), count(distinct e.id), count(distinct c.id)
+from orders od, customers c, employees e, offices o
+where od.customer_id = c.id
+  and c.sales_rep_employee_id = e.id
+  and e.office_id = o.id
+  and year(od.order_date) = 2003
+group by o.id
+order by count(*)desc;

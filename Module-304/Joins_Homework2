@@ -1,0 +1,12 @@
+-- which product did we sell the most of? number of orders, the total amount sold, and the product name
+select p.product_name, count(od.order_id), sum(od.quantity_ordered * od. price_each)
+from products p, orderdetails od
+where p.id = od.product_id
+group by p.product_name;
+
+--
+select year(o.order_date), p.product_name, sum(od.quantity_ordered * (od. price_each - p.buy_price)) as profit
+from products p, orderdetails od, orders o
+where o.id = od.order_id and p.id = od.product_id
+group by year(o.order_date), p.product_name
+order by year(o.order_date) desc, profit desc;
