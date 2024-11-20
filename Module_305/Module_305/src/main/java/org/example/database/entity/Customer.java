@@ -3,6 +3,10 @@ package org.example.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.awt.print.Book;
+import java.util.List;
+
 @Entity
 @Table(name = "customers")
 @AllArgsConstructor
@@ -15,7 +19,15 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sales_rep_employee_id", nullable = false)
+    @ToString.Exclude
+    private Employee employee;
+
+    @Column(name = "sales_rep_employee_id", insertable = false, updatable = false)
+    private Integer salesRepEmployeeId;
 
     @Column(name = "customer_name")
     private String customername;
@@ -47,10 +59,13 @@ public class Customer {
     @Column(name = "country")
     private String country;
 
-    @Column(name = "sales_rep_employee_id")
-    private Integer salesRepEmployeeId;
 
     @Column(name = "credit_limit", columnDefinition = "Decimal")
     private Double creditLimit;
+
+    @OneToMany(mappedBy = "customerId", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Order> orders;
 
 }

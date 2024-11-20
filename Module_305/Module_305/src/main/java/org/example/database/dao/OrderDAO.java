@@ -58,11 +58,12 @@ public class OrderDAO {
 
     // below here is our queries
     //** This query gets created in every single DAO make**
-    public Order findById(Integer id) {
+    public Order findOrderById(Integer id) {
+
+        Session session = factory.openSession();
 
         String hqlQuery = "Select o from Order o where o.id = :orderid";
 
-        Session session = factory.openSession();
 
         TypedQuery<Order> query = session.createQuery(hqlQuery, Order.class);
 
@@ -70,6 +71,29 @@ public class OrderDAO {
 
         try {
             Order result = query.getSingleResult();
+            return result;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            // have to close this session at the end which tells hibernate to give back it to the pool
+            session.close();
+        }
+
+
+    }
+
+    public List<Product> findByProductId(Integer id) {
+
+        String hqlQuery = "select p from OrderDetail od join Product p on p.id = od.productId where od.orderId= :orderid";
+
+        Session session = factory.openSession();
+
+        TypedQuery<Product> query = session.createQuery(hqlQuery, Product.class);
+
+        query.setParameter("orderid", id);
+
+        try {
+            List<Product> result = query.getResultList();
             return result;
         } catch (Exception e) {
             return null;

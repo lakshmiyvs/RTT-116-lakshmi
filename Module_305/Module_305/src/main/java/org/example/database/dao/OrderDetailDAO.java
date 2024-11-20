@@ -6,6 +6,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrderDetailDAO {
 
     private SessionFactory factory = new Configuration().configure().buildSessionFactory();
@@ -78,7 +81,66 @@ public class OrderDetailDAO {
 
     }
 
+    public OrderDetail findByOrderIdAndProductId(int orderId, int productId) {
+        Session session = factory.openSession();
 
+        String hql = "SELECT od from OrderDetail od where od.orderId = :orderId and od.productId = :productId";
 
+        TypedQuery<OrderDetail> query = session.createQuery(hql, OrderDetail.class);
+        query.setParameter("orderId", orderId);
+        query.setParameter("productId", productId);
+
+        try{
+            OrderDetail orderDetail = query.getSingleResult();
+            return orderDetail;
+        }catch(Exception e) {
+            return null;
+        }finally {
+            session.close();
+        }
+    }
+
+    public OrderDetail findOrderDetailById(Integer id) {
+        Session session = factory.openSession();
+
+        String hql = "SELECT od from OrderDetail od where od.id = :orderdetailId";
+
+        TypedQuery<OrderDetail> query = session.createQuery(hql, OrderDetail.class);
+        query.setParameter("orderdetailId", id);
+
+        try{
+            OrderDetail orderDetail = query.getSingleResult();
+            return orderDetail;
+        }catch(Exception e) {
+            return null;
+        }finally {
+            session.close();
+        }
+    }
+
+    public List<Integer> findByOrderId(Integer orderId) {
+        Session session = factory.openSession();
+
+        String hql = "SELECT od from OrderDetail od where od.orderId = :orderId";
+
+        TypedQuery<OrderDetail> query = session.createQuery(hql, OrderDetail.class);
+        query.setParameter("orderId", orderId);
+
+        try{
+            List<OrderDetail> orderDetail = query.getResultList();
+
+            List<Integer> list = new ArrayList<>();
+            for(OrderDetail od : orderDetail) {
+                list.add(od.getProductId());
+            }
+            return list;
+        }catch(Exception e) {
+            return null;
+        }finally {
+            session.close();
+        }
+    }
 
     }
+
+

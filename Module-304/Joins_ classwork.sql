@@ -96,4 +96,5 @@ group by od.order_id
 order by order_number;
 
 select * from orderdetails where order_id = 10102 order by id;
+select * from products;
 

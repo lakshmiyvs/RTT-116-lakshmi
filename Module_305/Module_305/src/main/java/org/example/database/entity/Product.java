@@ -3,6 +3,9 @@ package org.example.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
+
 @Entity
 @Table(name = "products")
 @AllArgsConstructor
@@ -45,6 +48,10 @@ public class Product {
     @Column(name = "msrp", columnDefinition = "DECIMAL")
     private double msrp;
 
+    @OneToMany(mappedBy = "productId", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<OrderDetail> orderdetails;
 
 
 }

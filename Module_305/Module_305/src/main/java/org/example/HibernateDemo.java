@@ -45,7 +45,7 @@ public class HibernateDemo {
         }
 
        // Order o = orderDAO.findById(10100);
-        System.out.println(orderDAO.findById(10100));
+        //System.out.println(orderDAO.findById(10100));
 
         OrderDetail od = orderdetailDAO.findById(1);
         System.out.println(od);

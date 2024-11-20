@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -24,6 +25,7 @@ public class Order {
     @Column(name = "customer_id")
     private int customerId;
 
+
     @Column(name = "order_date", columnDefinition = "DATE")
     private Date orderDate;
 
@@ -38,4 +40,9 @@ public class Order {
 
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
+
+    @OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<OrderDetail> orderdetails;
 }

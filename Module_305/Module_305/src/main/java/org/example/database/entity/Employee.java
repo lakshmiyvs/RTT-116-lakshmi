@@ -2,6 +2,11 @@ package org.example.database.entity;
 
 
 import jakarta.persistence.*;
+import lombok.ToString;
+import org.hibernate.query.Page;
+
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -14,6 +19,11 @@ public class Employee {
     // this defines the database column
     @Column(name = "id")
     private int id;
+
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Customer> customers;
 
     @Column(name = "lastname")
     private String lastname;
@@ -134,8 +144,17 @@ public class Employee {
         return profileImageUrl;
     }
 
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
     @Override
@@ -153,4 +172,6 @@ public class Employee {
                 ", profileImageUrl='" + profileImageUrl + '\'' +
                 '}';
     }
+
+
 }

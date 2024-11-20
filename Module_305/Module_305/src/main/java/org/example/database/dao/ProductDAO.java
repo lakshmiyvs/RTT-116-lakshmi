@@ -3,11 +3,14 @@ package org.example.database.dao;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.example.database.entity.Customer;
+import org.example.database.entity.Order;
+import org.example.database.entity.OrderDetail;
 import org.example.database.entity.Product;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,8 +69,8 @@ public class ProductDAO {
         TypedQuery<Product> query = session.createQuery(hqlQuery, Product.class);
         query.setParameter("orderId", orderId);
         try {
-            List<Product> products = query.getResultList();
-            return products;
+            List<Product> result = query.getResultList();
+            return result;
         } catch (Exception e) {
             return new ArrayList<>();
         } finally {
@@ -135,5 +138,84 @@ public class ProductDAO {
 
 
 
+
+    }
+    public List<Order> findByProductId(Integer id) {
+
+        String hqlQuery = "select o from OrderDetail od join Order o on o.id = od.orderId" +
+                "        where od.productId = :productId";
+        ;
+        Session session = factory.openSession();
+
+        TypedQuery<Order> query = session.createQuery(hqlQuery, Order.class);
+
+        query.setParameter("productId", id);
+
+        try {
+            List<Order> result = query.getResultList();
+            return result;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            // have to close this session at the end which tells hibernate to give back it to the pool
+            session.close();
+        }
+
+
+    }
+
+    public void addProduct(Integer id) {
+
+        Session session = factory.openSession();
+        try {
+        Product product = new Product();
+        //product.setId(555);
+        product.setProductDescription("Test Product");
+        product.setProductName("Test Product30");
+        product.setProductCode("101");
+        product.setProductScale("Test1");
+        product.setProductVendor("Test Vendor");
+        product.setQuantityInStock(105);
+        product.setBuyPrice(100.00);
+        product.setMsrp(106.00);
+        product.setProductlineId(1);
+       // create(product);
+        session.getTransaction().begin();
+
+            // in an older style of hibernate we need to use the persist function when we want to create a new record
+        session.persist(product);
+
+        session.getTransaction().commit();
+
+
+
+
+        String hqlQuery = "select id from Product where productName = :name";
+        TypedQuery<Integer> query = session.createQuery(hqlQuery, Integer.class);
+        query.setParameter("name", "Test Product30");
+        int result = query.getSingleResult();
+        OrderDetail orderdetail = new OrderDetail();
+        orderdetail.setOrderId(id);
+        orderdetail.setProductId(result);
+        //orderdetail.setId(555);
+        orderdetail.setQuantityOrdered(100);
+        orderdetail.setOrderLineNumber(105);
+        orderdetail.setPriceEach(106.00);
+        session.getTransaction().begin();
+
+            // in an older style of hibernate we need to use the persist function when we want to create a new record
+
+        session.persist(orderdetail);
+        session.getTransaction().commit();
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // have to close this session at the end which tells hibernate to give back it to the pool
+            session.close();
+        }
+
+
     }
 }
+

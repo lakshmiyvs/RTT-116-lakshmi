@@ -15,7 +15,7 @@ public class CustomerDAO {
 
     private SessionFactory factory = new Configuration().configure().buildSessionFactory();
 
-    public void update(Customer customer) {
+    public Customer update(Customer customer) {
         Session session = factory.openSession();
         session.getTransaction().begin();
         try {
@@ -24,11 +24,12 @@ public class CustomerDAO {
         } catch (Exception e) {
             session.getTransaction().rollback();
         }
-        session.close();
+        return customer;
+       // session.close();
 
     }
 
-    public void create(Customer customer) {
+    public Customer create(Customer customer) {
         Session session = factory.openSession();
         // starting a database transaction
         session.getTransaction().begin();
@@ -36,7 +37,8 @@ public class CustomerDAO {
         // in an older style of hibernate we need to use the persist function when we want to create a new record
         session.persist(customer);
         session.getTransaction().commit();
-        session.close();
+        //session.close();
+        return customer;
     }
 
 
@@ -90,6 +92,28 @@ public class CustomerDAO {
         } finally {
             session.close();
         }
+    }
+    public List<Customer> findCustomerWithName(String name) {
+        Session session = factory.openSession();
+
+        String hqlName = "SELECT c FROM Customer c WHERE c.contactFirstname = :cName " +
+                "                                   OR c.customername = :cName" +
+                "                                   OR c.contactLastname = :cName" +
+                "                                   ORDER BY c.contactFirstname";
+
+        TypedQuery<Customer> query = session.createQuery(hqlName, Customer.class);
+        query.setParameter("cName", name);
+
+        try{
+            List<Customer> resultNameList = query.getResultList();
+            return resultNameList;
+        }catch(Exception e) {
+            return new ArrayList<>();
+
+        }finally {
+            session.close();
+        }
+
     }
 
 
