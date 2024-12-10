@@ -1,0 +1,14 @@
+.definedexternal {
+    background-color: aquamarine;
+    padding: 15px;
+}
+
+h1 {
+    background-color: azure;
+}
+
+.defined-external {
+    /* the order of the file matters .. this will override the 
+    padding defined above because it define after */
+    padding: 20px;
+}

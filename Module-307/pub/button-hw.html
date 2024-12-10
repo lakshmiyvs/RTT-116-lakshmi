@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Click Counter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        button {
+            margin: 10px 0;
+        }
+        .counter {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Click Counter</h1>
+
+    <!-- Part 1: Single Button Counter -->
+    <div class="counter">
+        <button id="button1">Click Me!</button>
+        Count: <span id="count1">0</span>
+    </div>
+
+    <!-- Part 2: Second Button Counter -->
+    <div class="counter">
+        <button id="button2">Click Me Too!</button>
+        Count: <span id="count2">0</span>
+    </div>
+
+    <!-- Part 3: Add More Counters Dynamically -->
+    <button id="addCounterButton">Add Another Counter</button>
+    <div id="dynamicCounters"></div>
+
+    <script>
+        // Part 1: First Counter
+        const button1 = document.getElementById("button1");
+        const count1 = document.getElementById("count1");
+        button1.addEventListener("click", () => {
+            count1.textContent = parseInt(count1.textContent) + 1;
+        });
+
+        // Part 2: Second Counter
+        const button2 = document.getElementById("button2");
+        const count2 = document.getElementById("count2");
+        button2.addEventListener("click", () => {
+            count2.textContent = parseInt(count2.textContent) + 1;
+        });
+
+        // Part 3: Dynamically Add More Counters
+        const addCounterButton = document.getElementById("addCounterButton");
+        const dynamicCounters = document.getElementById("dynamicCounters");
+        let counterId = 3;
+
+        addCounterButton.addEventListener("click", () => {
+            // Create a new counter div
+            const newCounter = document.createElement("div");
+            newCounter.classList.add("counter");
+
+            // Create the button
+            const newButton = document.createElement("button");
+            newButton.textContent = `Click Me ${counterId}!`;
+
+            // Create the span
+            const newSpan = document.createElement("span");
+            newSpan.textContent = "0";
+
+            // Increment the span count on button click
+            newButton.addEventListener("click", () => {
+                newSpan.textContent = parseInt(newSpan.textContent) + 1;
+            });
+
+            // Append button and span to the new counter div
+            newCounter.appendChild(newButton);
+            newCounter.appendChild(document.createTextNode(" Count: "));
+            newCounter.appendChild(newSpan);
+
+            // Append the new counter div to the dynamicCounters div
+            dynamicCounters.appendChild(newCounter);
+
+            // Increment the counter ID for the next dynamic counter
+            counterId++;
+        });
+    </script>
+</body>
+</html>

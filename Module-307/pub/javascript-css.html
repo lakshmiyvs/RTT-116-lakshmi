@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .headerstyle {
+        text-decoration: underline;
+    }
+    .header{
+        text-decoration: underline;
+    }
+    
+</style>
+<body>
+    <h1 style = "color: brown;"
+    id="header">This is the header</h1>
+</body>
+<script>
+    let h = document.querySelector("#header");
+
+    //h.style.<any css property
+    h.style.color = "blue";
+    // the real css property is background-color
+    // which gets converted to camelCase for javascript
+    h.style.backgroundColor = 'red';
+    h.style.fontsize = '50px';
+
+    h.classList.add("headerstyle");
+
+    h.classList.remove("headerstyle");
+    h.classList.add("header");
+</script>
+</html>

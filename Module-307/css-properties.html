@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- we got this snippet of code from fonts.google.com-->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css?family=Playwrite+AU+VIC:wght300,400>
+    <link rel="stylesheet" href="/pub/css/#external.css">
+</head>
+<body>
+    <!-- this is whats called internal styling -->
+    <style>
+        /* this will apply the css properties to all p and span tags in the document */
+        p, span {
+            color: red;
+            background-color: beige;
+            font-size: 15px;
+            font-weight:bold;
+            font-size:30px;
+            font-family: Roboto, 'Gill Sans';
+        }
+
+        .customclass {
+            color: blue;
+            margin: 10px; /* this will apply to all 4 sides */
+            margin: 10px 10px 10px 10px; /* top, right, bottom, left */
+            padding-bottom: 15px;
+            padding-left: 10px;
+            padding-right: 20px;
+            padding-top: 5px;
+            border-top: 1px solid black;
+            background-color: bisque;
+        }
+
+        .pseudo {
+            /* this class is applied when the mouse is not over the element */
+            background-color: brown;
+        }
+
+        .pseudo:hover, .pseudo:active {
+            /* this is applied only when the mouse is over the element */
+            background-color: green;
+            padding: 15px;
+        }
+
+        .pseudo:active {
+            /* this is applied only when the element is clicked on the tag */
+            background-color: chartreuse;
+            padding: 20px;
+        }
+
+        #anything {
+            background-color: aqua;
+        }
+    </style>
+
+    <h1>Styled </h1>
+
+    <p>This has some text in it</p>
+
+    <p>This is paragraph</p>
+
+    <!-- this is inline styling where we use the style attribute in the html tag itself.
+     This styling has the highest presidence and will overwrite internal and external
+     css -->
+
+    <p style="color:black;">This is the ending</p>
+
+    <!-- we are using class attribute to apply a css class which is defined 
+     above as .customclass -->
+     
+    <div class="customclass"> Thisis p4</div>
+    <div class="customclass"> This is p5</div>
+
+    <div id="anything"> This is more text with an id on the div</div>
+    <div class="defined-external">This is defined in external css</div>
+    <div class="pseudo"></div>
+    <span>this is a span</span>
+
+</body>
+</html>
