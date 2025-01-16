@@ -2,17 +2,19 @@ package com.example.module_309.controller;
 
 
 import com.example.module_309.database.dao.UserDAO;
+import com.example.module_309.database.entity.User;
 import com.example.module_309.form.SignupFormBean;
 import com.example.module_309.security.AuthenticatedUserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -74,7 +76,7 @@ public class LoginController {
             String encryptedPassword = passwordEncoder.encode(form.getPassword());
             user.setPassword(encryptedPassword);
 
-            userDao.save(user);
+            //userDao.save(user);
 
             // since this is a new user we can manually authenticate them for the first time
             authenticatedUserService.changeLoggedInUsername(session,form.getUsername(),form.getPassword());
